@@ -25,8 +25,7 @@ def main(filename, num_pairs):
     distances = []
     for i, box in enumerate(boxes):
         for other_box in boxes[i + 1 :]:
-            if box != other_box:
-                distances.append((distance(box, other_box), box, other_box))
+            distances.append((distance(box, other_box), box, other_box))
     distances.sort()
 
     circuits = nx.Graph()

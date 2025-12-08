@@ -20,24 +20,17 @@ def main(filename, ):
         lines = f.readlines()
 
     boxes = [tuple(int(coord) for coord in box.split(",")) for box in lines]
+
     circuits = nx.Graph()
-    for box in boxes:
-        circuits.add_node(box)
-
-    distances = []
-
     for i, box in enumerate(boxes):
         for other_box in boxes[i + 1:]:
-            if box != other_box:
-                distances.append((distance(box, other_box), box, other_box))
-    distances.sort()
+            circuits.add_edge(box, other_box, weight=distance(box, other_box))
 
-    for _, box1, box2 in distances:
-        circuits.add_edge(box1, box2)
-        if nx.is_connected(circuits):
-            return box1[0] * box2[0]
-
-
+    # we are looking for longest edge in minimum spanning tree
+    edges = nx.minimum_spanning_edges(circuits)
+    # edges look like ((216, 146, 977), (117, 168, 530), {'weight': 458.360120429341})
+    longest_edge = max(edges, key= lambda e: e[-1]["weight"])
+    return longest_edge[0][0] * longest_edge[1][0]
 
 EXPECTED_TEST_RESULT = 25272
 test_and_run(main, testfile, EXPECTED_TEST_RESULT, inputfile)
