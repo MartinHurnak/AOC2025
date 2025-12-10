@@ -26,19 +26,22 @@ class Machine:
     def bfs(self):
         queue = deque()
         queue.append(QueueItem([False] * len(self.lights), []))
+        visited = set()
 
-        print(self.lights)
         while queue:
             item = queue.popleft()
-            # print(item.lights, item.buttons)
             if item.lights == self.lights:
-                print(item.buttons)
                 return len(item.buttons)
+            
             for button in self.buttons:
                 new_lights = item.lights.copy()
                 for l in button:
                     new_lights[l] = not new_lights[l]
+
+                # if we have already been in that state, it does not make sense to search again
+                if tuple(new_lights) not in visited:
                     queue.append(QueueItem(new_lights, item.buttons + [button]))
+                    visited.add(tuple(new_lights))
 
 
 
